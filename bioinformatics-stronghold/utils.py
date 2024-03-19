@@ -1,9 +1,10 @@
-def read_fasta():
+from sys import stdin
+def read_fasta(file = stdin):
 	res = {}
 	key = ''
 	while True:
 		try:
-			s = input()
+			s = file.readline().strip()
 		except:
 			break
 
