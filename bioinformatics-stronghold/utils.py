@@ -1,4 +1,5 @@
 from sys import stdin
+
 def read_fasta(file = stdin):
 	res = {}
 	key = ''
@@ -98,3 +99,50 @@ def translate(s, x = 0):
 
 def transcript(s):
 	return s.replace('T', 'U')
+
+def _parse_newick_util(s, i, names, trees):
+	weight = ''
+	while s[i].isdigit():
+		weight += s[i]
+		i += 1
+	if s[i] != ':':
+		weight = '1'
+	else:
+		i += 1
+	weight = int(weight[::-1])
+	
+	name = ''
+	while s[i] not in '(),':
+		name += s[i]
+		i += 1
+
+	j = len(trees)
+	names.append(name[::-1])
+	trees.append([])
+	
+	if s[i] != ')':
+		return i, j, weight
+
+	while s[i] in ',)':
+		i, v, w = _parse_newick_util(s, i + 1, names, trees)
+		trees[j].append((v, w))
+	i += 1
+
+	return i, j, weight
+	
+def parse_newick(s):
+	names = []
+	trees = []
+
+	s = s[::-1]
+	i = s[0] == ';'
+	while i < len(s):
+		i, _, _ = _parse_newick_util(s, i + (s[i] in ',;'), names, trees)
+
+	new_trees = [[] for _ in range(len(trees))]
+	for u in range(len(trees)):
+		for v, w in trees[u]:
+			new_trees[u].append((v, w))
+			new_trees[v].append((u, w))
+
+	return names, new_trees

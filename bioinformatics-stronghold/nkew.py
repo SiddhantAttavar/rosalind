@@ -5,9 +5,9 @@ def dfs(u, p, y, tree):
 		return 0
 	for v, w in tree[u]:
 		if v != p:
-			x = dfs(v, u, y, tree) + 1
-			if x:
-				return x
+			x = dfs(v, u, y, tree)
+			if x != -1:
+				return x + w
 	return -1
 
 while True:
