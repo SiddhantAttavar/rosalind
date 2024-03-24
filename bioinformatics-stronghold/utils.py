@@ -146,3 +146,15 @@ def parse_newick(s):
 			new_trees[v].append((u, w))
 
 	return names, new_trees
+
+def revc(s):
+	d = {
+		'A': 'T',
+		'T': 'A',
+		'C': 'G',
+		'G': 'C',
+	}
+	res = ''
+	for c in s:
+		res += d[c]
+	return res[::-1]

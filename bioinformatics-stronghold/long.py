@@ -2,34 +2,27 @@ from utils import read_fasta
 
 l = list(read_fasta().values())
 
-graph = [[] for _ in range(len(l))]
-for i in range(len(l)):
-	for j in range(len(l)):
-		if i == j:
-			continue
+while len(l) > 1:
 
-		x = min(len(l[i]), len(l[j]))
-		for k in range(x, (x + 1) // 2 - 1, -1):
-			if l[i][:k] == l[j][len(l[j]) - k:]:
-				graph[j].append((i, k))
-				break
+	m = (-1, -1)
+	x = 0
+	for i in range(len(l)):
+		for j in range(len(l)):
+			if i == j:
+				continue
 
-topo = []
-vis = [False] * len(graph)
+			for k in range(min(len(l[i]), len(l[j])), x, -1):
+				if l[i][:k] == l[j][len(l[j]) - k:]:
+					m = (i, j)
+					x = k
+					break
 
-def dfs(u, x):
-	vis[u] = True
-	for v, w in graph[u]:
-		if not vis[v]:
-			dfs(v, w)
-	topo.append((u, x))
+	s = l[m[1]] + l[m[0]][x:]
+	if m[0] < m[1]:
+		m = (m[1], m[0])
+	
+	l.pop(m[0])
+	l.pop(m[1])
+	l.append(s)
 
-for i in range(len(graph)):
-	if not vis[i]:
-		dfs(i, 0)
-topo.reverse()
-
-res = ''
-for i, x in topo:
-	res += l[i][x:]
-print(res)
+print(l[0])
