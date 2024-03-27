@@ -28,4 +28,4 @@ for i in range(5):
 		l[a[i] - 1] = i
 	
 	# print(a, b, ''.join(str(l[i - 1]) for i in b))
-	print(memo[''.join(str(l[i - 1]) for i in b)])
+	print(memo[''.join(str(l[i - 1]) for i in b)], end = ' ')
