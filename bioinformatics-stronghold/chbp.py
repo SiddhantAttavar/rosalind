@@ -1,46 +1,36 @@
-a = input().split()
+k = input().split()
 l = []
-
 while True:
 	try:
 		l.append(input())
 	except:
 		break
+l = [list(map(int, i)) for i in l]
 
-x = 1
-while x < len(a):
-	x *= 2
+a = set(range(len(l)))
+b = set(range(len(l[0])))
+s = [sum(i) for i in l]
 
-tree = [[] for _ in range(2 * x)]
-for i in range(x - 1):
-	tree[i] = [2 * i, 2 * i + 1]
-
-names = [[] for i in range(2 * x)]
-
-def construct_tree(names, j):
-	res = []
-
-	if j == len(l[0]):
-
-
-	a = []
-	b = []
-
-for j in range(len(l[0])):
-	y = 1
-	for i in l:
-		y *= 2
-		if i[j] == '1':
-			y += 1
-	names[y].append(a[j])
-
-def write_newick(u):
-	if len(names[u]) == 1:
-		return names[u][0]
+while a:
+	u, x = 0, 0
+	for i in a:
+		if s[i] == 2:
+			u = i
+			x = 1
+		elif s[i] == len(b) - 2:
+			u = i
+			x = 0
 	
-	if len(names[u]) == 2:
-		return f'({names[u][0]},{names[u][1]})'
-	
-	return f'({write_newick(2 * u)},{write_newick(2 * u + 1)})'
+	p, q = [i for i in b if l[u][i] == x]
+	k[p] = f'({k[p]},{k[q]})'
+	b.remove(q)
 
-print(f'{write_newick(1)};')
+	v = []
+	for i in a:
+		s[i] -= l[i][q]
+		if s[i] == 1 or s[i] == len(b) - 1:
+			v.append(i)
+	for i in v:
+		a.remove(i)
+
+print(f'({",".join(k[i] for i in b)});')
