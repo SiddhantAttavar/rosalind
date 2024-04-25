@@ -1,4 +1,5 @@
 s = input()
+s += '$'
 
 res = []
 def solve(l):

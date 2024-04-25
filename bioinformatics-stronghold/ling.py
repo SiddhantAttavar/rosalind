@@ -1,22 +1,24 @@
 s = input()
 
-a = {'A': [], 'C': [], 'T': [], 'G': [], '$': []}
-for i in range(len(s)):
-	a[s[i]].append(i)
+n = len(s)
+d = 'ACGT'
+l = [d.index(i) for i in s]
 
-res = 1
-for c, l in a.items():
-	x = 1
-	while len(l) > 0 and max(l) < len(s):
-		for i in l:
-			if s[i] != s[l[0]]:
-				break
-		else:
-			x += 1
-			for i in range(len(l)):
-				l[i] += 1
-			continue
-		break
-	res *= x
+graph = [[-1] * 4]
+t = []
+for i in l[::-1]:
+	t.append(i)
+	u = 0
+	for j in t[::-1]:
+		if graph[u][j] == -1:
+			graph[u][j] = len(graph)
+			graph.append([-1] * 4)
+		u = graph[u][j]
 
-print(res)
+x = 1
+y = 0
+for k in range(1, n + 1):
+	if x <= n:
+		x *= 4
+	y += min(x, n - k + 1)
+print((len(graph) - 1) / y)
