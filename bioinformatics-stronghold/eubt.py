@@ -7,16 +7,15 @@ def solve(x):
 		return [l[x[0]]]
 
 	res = []
-	flag = x[0] == 1
-	for i in range(1 << (len(x) - flag)):
-		a = [1] if flag else []
+	for i in range(1 << (len(x) - 1)):
+		a = [x[-1]]
 		b = []
 
-		for j in range(len(x) - flag):
+		for j in range(len(x) - 1):
 			if i & (1 << j):
-				b.append(x[j + flag])
+				b.append(x[j])
 			else:
-				a.append(x[j + flag])
+				a.append(x[j])
 
 		if min(len(a), len(b)) == 0:
 			continue
@@ -28,4 +27,4 @@ def solve(x):
 	return res
 
 for s in solve(range(1, len(l))):
-	print(f'{s}{l[0]};')
+	print(f'({s}){l[0]};')
