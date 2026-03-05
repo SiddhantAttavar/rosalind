@@ -2,87 +2,40 @@ from sys import setrecursionlimit
 from utils import revc
 setrecursionlimit(int(1e9))
 
-v = []
+p = []
 while True:
 	try:
-		v.append(input())
+		p.append(input())
 	except:
 		break
 
-def get_graph(k):
-	g = set()
-	global v
-	for i in v:
-		for j in range(len(i) - k + 1):
-			s = i[j: j + k + 1]
-			g.add((s[:-1], s[1:]))
-			s = revc(s)
-			g.add((s[:-1], s[1:]))
+p += [revc(s) for s in p]
 
-	l = []
-	graph = []
-	rev_graph = []
+res = '_' * int(1e6)
+for k in range(len(p[0]) - 1, 0, -1):
 	a = {}
-	for u, v in g:
-		if u not in a:
-			a[u] = len(l)
-			l.append(u)
-			graph.append([])
-			rev_graph.append([])
-		
-		if v not in a:
-			a[v] = len(l)
-			l.append(v)
-			graph.append([])
-			rev_graph.append([])
-		
-		i = a[u]
-		j = a[v]
+	l = []
+	e = []
+	for s in p:
+		for i in range(len(s) - k):
+			u = s[i: i + k]
+			v = s[i + 1: i + k + 1]
+			if u not in a:
+				a[u] = len(a)
+				l.append(u)
+			if v not in a:
+				a[v] = len(a)
+				l.append(v)
+			e.append((a[u], a[v]))
 
-		graph[i].append(j)
-		rev_graph[j].append(i)
+	graph = dict(e)
+	s = ''
+	u = next(iter(graph))
+	v = u
+	while u in graph:
+		s += l[u][-1]
+		u = graph.pop(u)
 
-	return graph, rev_graph, l
-
-def dfs(u, graph, rev_graph, vis):
-	vis[u] = True
-	for v in graph[u] + rev_graph[u]:
-		if not vis[v]:
-			dfs(v, graph, rev_graph, vis)
-
-cycle = []
-def dfs2(u, graph, vis):
-	vis[u] = True
-	cycle.append(u)
-	for v in graph[u]:
-		if not vis[v]:
-			dfs2(v, graph, vis)
-
-for k in range(1, len(v[0])):
-	graph, rev_graph, l = get_graph(k)
-
-	comp = 0
-	cycle = []
-	vis = [False] * len(graph)
-	for i in range(len(graph)):
-		if not vis[i]:
-			dfs(i, graph, rev_graph, vis)
-			comp += 1
-	
-	if comp != 2:
-		continue
-
-	print(k)
-	print(l)
-	for i in graph:
-		print(*i)
-	
-	cycle = []
-	vis = [False] * len(graph)
-	dfs2(0, graph, vis)
-
-	res = l[0][-1]
-	for i in cycle[1:]:
-		res += l[i][-1]
-	print(res)
-	break
+	if u == v:
+		print(s)
+		exit(0)
